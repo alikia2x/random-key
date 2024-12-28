@@ -26,17 +26,6 @@ const getRandomBytes = async (size: number): Promise<Uint8Array> => {
 	}
 };
 
-/**
- * Generates a random number between 0 and max (exclusive).
- * @param max - The upper limit for the random number.
- * @returns A random number between 0 and max.
- */
-const rn = async (max: number): Promise<number> => {
-	const rnBytes = await getRandomBytes(2);
-	const randomNum = rnBytes[0] * 256 + rnBytes[1];
-	return randomNum % max;
-};
-
 const digits = '0123456789';
 const base62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
 const base30 = '0123456789ABCDFHKLMNPQRSTUVWXYZ'; // 1-9, A-Z exclude(E, G, I, J, O) for human readability
@@ -48,12 +37,16 @@ const base30 = '0123456789ABCDFHKLMNPQRSTUVWXYZ'; // 1-9, A-Z exclude(E, G, I, J
  * @returns The generated random string.
  */
 export const generate = async (len: number = 16, chars: string = base62): Promise<string> => {
-	let key = '';
 	const charsLen = chars.length;
+	const randomValues = await getRandomBytes(len * 2); // Generate enough random bytes for the entire string
+	const keyArray = new Array(len);
+
 	for (let i = 0; i < len; i++) {
-		key += chars[await rn(charsLen)];
+		const randomNum = (randomValues[i * 2] << 8) | randomValues[i * 2 + 1]; // Combine two bytes into a 16-bit number
+		keyArray[i] = chars[randomNum % charsLen];
 	}
-	return key;
+
+	return keyArray.join('');
 };
 
 /**
