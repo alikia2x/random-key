@@ -11,7 +11,6 @@
 
 ## Installation
 
-This package was published to [JSR](https://jsr.io/) only. 
 You can install it through these commands with your favorite package manager:
 
 ```bash
@@ -19,19 +18,19 @@ deno add jsr:@alikia/random-key
 ```
 
 ```bash
-npx jsr add @alikia/random-key
+npm i @alikia/random-key
 ```
 
 ```bash
-yarn dlx jsr add @alikia/random-key
+yarn i @alikia/random-key
 ```
 
 ```bash
-pnpm dlx jsr add @alikia/random-key
+pnpm i @alikia/random-key
 ```
 
 ```bash
-bunx jsr add @alikia/random-key
+bun add @alikia/random-key
 ```
 
 ## Usage
