@@ -1,7 +1,10 @@
 {
   "name": "@alikia/random-key",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "module": "src/index.ts",
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
