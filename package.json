@@ -1,10 +1,16 @@
 {
   "name": "@alikia/random-key",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "module": "src/index.ts",
   "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup --config ./tsup.config.ts --minify"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "tsup": "^8.5.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
