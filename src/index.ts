@@ -16,7 +16,7 @@ const getRandomBytes = async (size: number): Promise<Uint8Array> => {
 	} catch (error) {
 		// Fallback to Math.random if both crypto APIs fail
 		console.warn(
-			`Crypto API is not available, the Math.random() pseudo-random number generator is being used. Please note that this is not cryptographically secure.`
+			`[random-key] Crypto API is not available, the Math.random() pseudo-random number generator is being used. Please note that this is not cryptographically secure.`
 		);
 		const array = new Uint8Array(size);
 		for (let i = 0; i < size; i++) {
@@ -27,16 +27,16 @@ const getRandomBytes = async (size: number): Promise<Uint8Array> => {
 };
 
 const digits = '0123456789';
-const base62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
-const base30 = '0123456789ABCDFHKLMNPQRSTUVWXYZ'; // 1-9, A-Z exclude(E, G, I, J, O) for human readability
+const base62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+const base58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 /**
  * Generates a random string of specified length.
  * @param len - The length of the string to generate, default is 16.
- * @param chars - The character set to use for generating the string, default is base62.
+ * @param chars - The character set to use for generating the string, default is base58.
  * @returns The generated random string.
  */
-export const generate = async (len: number = 16, chars: string = base62): Promise<string> => {
+export const generate = async (len: number = 16, chars: string = base58): Promise<string> => {
 	const charsLen = chars.length;
 	const randomValues = await getRandomBytes(len * 2); // Generate enough random bytes for the entire string
 	const keyArray = new Array(len);
@@ -49,20 +49,53 @@ export const generate = async (len: number = 16, chars: string = base62): Promis
 	return keyArray.join('');
 };
 
+function base64LengthToBytesLength(base64Length: number): number {
+	if (base64Length % 4 !== 0) {
+		throw new Error(`Base64 string length must be a multiple of 4, but got ${base64Length}`);
+	}
+	const padding = base64Length === 0 ? 0 : (4 - (base64Length % 4)) % 4;
+	return (base64Length * 3) / 4 - padding;
+}
+
+export const factoryHelper = (chars: string = base58): ((len?: number) => Promise<string>) => {
+	return (len: number = 16) => generate(len, chars);
+};
+
+/**
+ * Generates a random hex string of specified length.
+ * @param len - The length of the string to generate, default is 16.
+ * @returns The generated random hex string.
+ */
+export const generateHex = async (len: number = 16): Promise<string> => {
+	return Buffer.from(await getRandomBytes(len)).toString('hex');
+};
+
 /**
  * Generates a random string of digits of specified length.
  * @param len - The length of the string to generate, default is 16.
  * @returns The generated random digit string.
  */
-export const generateDigits = async (len: number = 16): Promise<string> => {
-	return generate(len, digits);
-};
+export const generateDigits = factoryHelper(digits);
 
 /**
- * Generates a random Base30 string of specified length.
+ * Generates a random Base58 string of specified length.
  * @param len - The length of the string to generate, default is 16.
- * @returns The generated random Base30 string.
+ * @returns The generated random Base58 string.
  */
-export const generateBase30 = async (len: number = 16): Promise<string> => {
-	return generate(len, base30);
+export const generateBase58 = factoryHelper(base58);
+
+/**
+ * Generates a random Base62 string of specified length.
+ * @param len - The length of the string to generate, default is 16.
+ * @returns The generated random Base62 string.
+ */
+export const generateBase62 = factoryHelper(base62);
+
+/**
+ * Generates a random Base64 string of specified length.
+ * @param len - The length of the string to generate, default is 16.
+ * @returns The generated random Base64 string.
+ */
+export const generateBase64 = async (len: number = 16): Promise<string> => {
+	return Buffer.from(await getRandomBytes(base64LengthToBytesLength(len))).toString('base64');
 };
