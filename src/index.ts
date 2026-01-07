@@ -1,1 +1,1 @@
-export { generate, generateDigits, generateBase58, generateBase62, generateBase64, generateHex } from "./randomKey"
+export { generate, generateDigits, generateBase58, generateBase62, generateBase64, generateHex, ALPHABETS } from "./randomKey"
