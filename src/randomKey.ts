@@ -90,11 +90,13 @@ export const generate = (len: number = 16, alphabet: string = ALPHABETS.base58):
 	return createGenerator(alphabet)(len);
 };
 
-export const generateDigits = createGenerator(ALPHABETS.digits);
-export const generateHex = createGenerator(ALPHABETS.hex);
-export const generateBase62 = createGenerator(ALPHABETS.base62);
-export const generateBase58 = createGenerator(ALPHABETS.base58);
-export const generateBase64 = createGenerator(ALPHABETS.base64url);
+type RandomKeyGenerator = (len?: number) => string;
+
+export const generateDigits: RandomKeyGenerator = createGenerator(ALPHABETS.digits);
+export const generateHex: RandomKeyGenerator = createGenerator(ALPHABETS.hex);
+export const generateBase62: RandomKeyGenerator = createGenerator(ALPHABETS.base62);
+export const generateBase58: RandomKeyGenerator = createGenerator(ALPHABETS.base58);
+export const generateBase64: RandomKeyGenerator = createGenerator(ALPHABETS.base64url);
 
 /**
  * Returns raw random bytes (useful for buffers/salts)
